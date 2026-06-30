@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruta Cachiflin - Sistema de control</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+
+  <!-- PANTALLA DE LOGIN -->
+  <div id="login-screen" class="login-overlay">
+    <div class="login-card">
+      <div class="login-logo">Ruta Cachiflin <span>Sistema de control</span></div>
+      <div class="login-icon"><i class="fa-solid fa-truck-fast"></i></div>
+      <h1 class="login-heading">Bienvenido</h1>
+      <p class="login-subheading">Inicia sesión para continuar</p>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="login-input-group">
+          <i class="fa-solid fa-user"></i>
+          <input type="email" id="login-email" placeholder="Correo" required autocomplete="email" />
+        </div>
+        <div class="login-input-group">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="login-password" placeholder="Contraseña" required autocomplete="current-password" />
+        </div>
+
+
+
+        <!-- Aceptación de políticas + cookies  -->
+        <div class="policy-check-row" id="policy-check-row">
+          <label class="policy-check-label">
+            <input type="checkbox" id="policy-checkbox" onchange="window.toggleLoginBtn()" />
+            <span>He leído y acepto las
+              <button type="button" class="policy-link" onclick="window.openPolicyModal()">Políticas de Privacidad y Uso</button>
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary login-btn" id="login-submit-btn" disabled>Iniciar Sesión</button>
+      </form>
+
+      <div id="login-error" class="login-error" style="display:none;"></div>
+
+
+
+      <p class="login-footer">Gestión de rutas logísticas</p>
+    </div>
+  </div>
+
+  <!-- APP PRINCIPAL -->
+  <aside class="sidebar" id="app-sidebar" style="display:none;">
+    <div class="logo">Ruta Cachiflin <span>Sistema de control</span></div>
+    <div class="sidebar-user" id="sidebar-user"></div>
+    <div class="nav-vertical">
+      <button class="nav-btn active" id="btn-nav-dashboard" onclick="showPanel('dashboard', 'Dashboard')"><i
+          class="fa-solid fa-table-columns"></i> Dashboard</button>
+      <button class="nav-btn" id="btn-nav-rutas" onclick="showPanel('rutas', 'Rutas')"><i class="fa-solid fa-route"></i> Rutas</button>
+      <button class="nav-btn" id="btn-nav-incidentes" onclick="showPanel('incidentes', 'Incidentes')"><i
+          class="fa-solid fa-triangle-exclamation"></i> Incidentes</button>
+      <button class="nav-btn" id="btn-nav-reclamos" onclick="showPanel('reclamos', 'Reclamos')"><i class="fa-regular fa-face-angry"></i>
+        Reclamos</button>
+      <button class="nav-btn" id="btn-nav-contratos" onclick="showPanel('contratos', 'Contratos')"><i class="fa-solid fa-file-signature"></i>
+        Contratos</button>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main-content" id="app-main" style="display:none;">
+    <div class="app">
+      <div class="topbar">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
+
+
+
+      <!-- DASHBOARD -->
+      <div id="panel-dashboard" class="panel active">
+        <!-- <div class="section-label">Estado general del sistema</div> -->
+        <div class="grid3" style="margin-bottom:1.5rem">
+          <div class="metric">
+            <div class="metric-val" id="d-rutas">0</div>
+            <div class="metric-label">Rutas activas hoy</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="d-incidentes">0</div>
+            <div class="metric-label">Incidentes pendientes</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="d-reclamos">0</div>
+            <div class="metric-label">Reclamos abiertos</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Rutas en curso</div>
+          <div class="card-sub">Actualizaciones en tiempo real</div>
+          <div id="dashboard-rutas"></div>
+        </div>
+        <div class="card" id="dashboard-recurrentes-card" style="display:none;">
+          <div class="card-title">Alerta de Reclamos Recurrentes</div>
+          <div class="card-sub">Resumen de costo acumulado y recurrencia por tipo de reclamo</div>
+          <div id="dashboard-recurrentes-content"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Alertas del sistema</div>
+          <div class="card-sub">Resumen de alertas activas</div>
+          <div id="dashboard-alertas"></div>
+        </div>
+      </div>
+
+
+
+
+      <!-- RUTAS -->
+      <div id="panel-rutas" class="panel">
+        <div class="card">
+          <div class="card-title">Registrar nueva salida de ruta</div>
+          <div class="card-sub">El operario de tráfico completa este formulario al inicio de cada ruta</div>
+          <div class="grid2">
+            <div><label>Conductor</label><select id="r-conductor">
+                <option>Carlos Mejía</option>
+                <option>José Martínez</option>
+                <option>Luis Reyes</option>
+                <option>Mario López</option>
+              </select></div>
+            <div><label>Número de unidad</label><select id="r-unidad">
+                <option>Unidad 01</option>
+                <option>Unidad 02</option>
+                <option>Unidad 03</option>
+                <option>Unidad 04</option>
+              </select></div>
+          </div>
+          <div class="grid2">
+            <div><label>Horario de salida</label><select id="r-horario">
+                <option>8:00 AM</option>
+                <option>10:00 AM</option>
+                <option>1:00 PM</option>
+                <option>3:00 PM</option>
+                <option>5:00 PM</option>
+              </select></div>
+            <div><label>Destino</label><input id="r-destino" placeholder="Ej. Choloma, Cortés" type="text" /></div>
+          </div>
+          <label>Número de pedido</label>
+          <input id="r-cliente" placeholder="PED-#####-L##" type="text" />
+          <div class="flex-end"><button class="btn btn-primary" onclick="registrarRuta()">Registrar salida</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Rutas activas</div>
+          <div class="card-sub">El sistema notifica a Atención al Cliente cada 40 minutos</div>
+          <div id="lista-rutas"></div>
+        </div>
+      </div>
+
+
+
+      <!-- INCIDENTES -->
+      <div id="panel-incidentes" class="panel">
+        <div class="card">
+          <div class="card-title">Reportar incidente en ruta</div>
+          <div id="no-rutas-msg" class="alert-box alert-warning" style="display:none; margin-top:10px;">
+            <i class="fa-solid fa-triangle-exclamation"></i> No hay rutas disponibles para reportar incidentes
+          </div>
+          <div id="incidente-form-fields">
+            <div class="card-sub">Sección 1 — Datos operativos · Lo completa el Operario de Tráfico</div>
+            <div style="margin-bottom: 12px;">
+              <label>Seleccionar Ruta Activa</label>
+              <select id="i-ruta-activa-select" onchange="window.actualizarCamposRutaActiva()">
+                <!-- Opciones dinámicas de rutas activas -->
+              </select>
+            </div>
+            <div class="grid2">
+              <div><label>Conductor</label><input id="i-conductor" type="text" readonly style="background:var(--color-background-base);" /></div>
+              <div><label>Número de unidad</label><input id="i-unidad" type="text" readonly style="background:var(--color-background-base);" /></div>
+            </div>
+            <div class="grid2">
+              <div><label>Tipo de incidente</label><select id="i-tipo">
+                  <option>Falla mecánica</option>
+                  <option>Accidente de tráfico</option>
+                  <option>Retraso por marcha</option>
+                  <option>Retraso por mantenimiento de calles</option>
+                  <option>Problema climático</option>
+                  <option>Otro</option>
+                </select></div>
+              <div><label>Ubicación del incidente</label><input id="i-ubicacion" placeholder="Punto de ruta donde ocurrió"
+                  type="text" /></div>
+            </div>
+            <label>Descripción del incidente</label>
+            <textarea id="i-descripcion" placeholder="¿Qué ocurrió exactamente?"></textarea>
+            <label>Acción inmediata tomada</label>
+            <input id="i-accion" placeholder="Ej. Se solicitó unidad de reemplazo" type="text" />
+
+            <hr class="sep" />
+            <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2
+              — Impacto en la entrega</div>
+            <div class="grid2">
+              <div><label>Cliente afectado (Pedido)</label><input id="i-cliente" type="text" readonly style="background:var(--color-background-base);" /></div>
+              <div><label>Nueva hora estimada de entrega</label><input id="i-hora" type="time" /></div>
+            </div>
+            <div class="grid2">
+              <div><label>Estado de la entrega</label><select id="i-estado">
+                  <option>Se completará hoy</option>
+                  <option>Se reprogramará</option>
+                  <option>Cancelada</option>
+                </select></div>
+              <div><label>¿Se notificó al cliente?</label><select id="i-notificado">
+                  <option>Sí</option>
+                  <option>No</option>
+                </select></div>
+            </div>
+            <div class="flex-end"><button class="btn btn-primary" onclick="reportarIncidente()">Enviar a
+                validación</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Incidentes pendientes de validación</div>
+          <div class="card-sub">El Jefe de Tráfico tiene máximo 15 minutos para validar cada reporte</div>
+          <div id="lista-incidentes"></div>
+        </div>
+      </div>
+
+
+
+      <!-- RECLAMOS -->
+      <div id="panel-reclamos" class="panel">
+        <div class="card">
+          <div class="card-title">Registrar reclamo de cliente</div>
+          <div class="card-sub">Sección 1 — Datos del reclamo · Lo completa el Agente de Servicio</div>
+          <div class="grid2">
+            <div><label>Nombre del cliente</label><input id="rc-cliente" placeholder="Nombre completo" type="text" />
+            </div>
+            <div><label>Número de pedido afectado</label><input id="rc-pedido" placeholder="Ej. PED-2024-001"
+                type="text" /></div>
+          </div>
+          <label>Tipo de reclamo</label>
+          <select id="rc-tipo">
+            <option>Entrega tardía por tráfico o marchas</option>
+            <option>Entrega tardía por mantenimiento de calles</option>
+            <option>Entrega tardía por problemas climáticos</option>
+            <option>Paquete dañado</option>
+            <option>Entrega en dirección incorrecta</option>
+            <option>Entrega no realizada</option>
+          </select>
+          <label>Descripción del cliente</label>
+          <textarea id="rc-descripcion" placeholder="¿Qué reportó el cliente?"></textarea>
+
+          <hr class="sep" />
+          <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2
+            — Análisis operativo</div>
+          <div class="grid2">
+            <div><label>Conductor involucrado</label><select id="rc-conductor">
+                <option>Carlos Mejía</option>
+                <option>José Martínez</option>
+                <option>Luis Reyes</option>
+                <option>Mario López</option>
+              </select></div>
+            <div><label>Ruta afectada</label><input id="rc-ruta" placeholder="Ej. Ruta San Pedro — Choloma"
+                type="text" /></div>
+          </div>
+          <div class="grid2">
+            <div><label>Causa identificada</label><input id="rc-causa" placeholder="¿Qué generó el reclamo?"
+                type="text" /></div>
+            <div><label>¿Es un problema recurrente?</label><select id="rc-recurrente">
+                <option>No</option>
+                <option>Sí</option>
+              </select></div>
+          </div>
+          <div class="flex-end"><button class="btn btn-primary" onclick="registrarReclamo()">Enviar a
+              validación</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Reclamos activos</div>
+          <div id="lista-reclamos"></div>
+        </div>
+      </div>
+
+
+
+      <!-- CONTRATOS -->
+      <div id="panel-contratos" class="panel">
+        <div class="card">
+          <div class="card-title">Registrar condiciones de contrato</div>
+          <div class="card-sub">Lo completa el Director Financiero al firmar con un cliente nuevo</div>
+          <div class="grid2">
+            <div><label>Nombre del cliente</label><input id="c-nombre" placeholder="Nombre de la empresa o persona"
+                type="text" /></div>
+            <div><label>Prioridad de entrega</label><select id="c-prioridad">
+                <option>Normal</option>
+                <option>Urgente — 24 horas</option>
+                <option>Express — mismo día</option>
+              </select></div>
+          </div>
+          <label>Condiciones especiales de entrega</label>
+          <input id="c-condiciones" placeholder="Ej. Solo entregas en horario matutino, carga frágil" type="text" />
+          <div class="grid2">
+            <div><label>Tarifa acordada (L.)</label><input id="c-tarifa" placeholder="0.00" type="number" /></div>
+            <div><label>Penalización por entrega tardía (L.)</label><input id="c-penalizacion" placeholder="0.00"
+                type="number" /></div>
+          </div>
+          <div class="flex-end"><button class="btn btn-primary" onclick="registrarContrato()">Guardar y notificar a
+              todas las áreas</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Contratos activos</div>
+          <div class="card-sub">Visible para Operaciones y Atención al Cliente en cada pedido</div>
+          <div id="lista-contratos"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- MODAL DE POLÍTICAS DE PRIVACIDAD Y USO -->
+  <div id="policy-modal-overlay" class="policy-modal-overlay" style="display:none;" onclick="window.closePolicyModal(event)">
+    <div class="policy-modal">
+      <div class="policy-modal-header">
+        <div class="policy-modal-title">
+          <i class="fa-solid fa-shield-halved"></i> Políticas de Privacidad y Uso
+        </div>
+        <button class="policy-modal-close" onclick="window.closePolicyModal(null, true)" type="button">&#x2715;</button>
+      </div>
+      <div class="policy-modal-body">
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-circle-info"></i> 1. Uso del Sistema</h3>
+          <p>El Sistema de Control Logístico <strong>Ruta Cachiflin</strong> está destinado exclusivamente al uso interno del personal autorizado. El acceso a la plataforma implica la aceptación de las presentes políticas. Cualquier uso indebido, acceso no autorizado o divulgación de información a terceros está estrictamente prohibido y podrá resultar en acciones disciplinarias o legales.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-lock"></i> 2. Confidencialidad de la Información</h3>
+          <p>Toda la información gestionada en este sistema (rutas, incidentes, reclamos, contratos, datos de conductores y clientes) es propiedad exclusiva de la empresa. El personal autorizado se compromete a mantener la confidencialidad de dicha información, no compartirla fuera del entorno laboral y utilizarla únicamente para fines operativos legítimos.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-user-shield"></i> 3. Tratamiento de Datos Personales</h3>
+          <p>Los datos personales recopilados (correo electrónico, registros de actividad, historial de operaciones) son tratados con base en una relación laboral legítima. Dichos datos son utilizados exclusivamente para la gestión logística interna, auditoría de procesos y mejora continua del servicio. No se venderán ni compartirán con terceros sin consentimiento expreso.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-cookie-bite"></i> 4. Uso de Cookies</h3>
+          <p>Este sistema utiliza los siguientes tipos de cookies:</p>
+          <ul>
+            <li><strong>Esenciales (Obligatorias):</strong> Necesarias para el inicio de sesión seguro mediante Firebase Authentication y el control de acceso por roles. No pueden desactivarse.</li>
+            <li><strong>Rendimiento y SLA:</strong> Permiten el refresco automático de indicadores de tiempo real (barras de SLA, alertas de ruta). Mejoran la experiencia operativa sin recopilar datos de navegación externa.</li>
+            <li><strong>Preferencias de Interfaz:</strong> Guardan el último panel visualizado para que cada sesión inicie donde el usuario lo dejó.</li>
+          </ul>
+          <p>Al aceptar estas políticas, el usuario consiente el uso de las cookies descritas anteriormente.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-scale-balanced"></i> 5. Derechos ARCO y Derecho al Olvido</h3>
+          <p>De acuerdo con la normativa de protección de datos aplicable, todo usuario tiene derecho a:</p>
+          <ul>
+            <li><strong>Acceso:</strong> Conocer qué datos personales están almacenados sobre su persona.</li>
+            <li><strong>Rectificación:</strong> Solicitar la corrección de datos inexactos o incompletos.</li>
+            <li><strong>Cancelación (Derecho al Olvido):</strong> Solicitar la eliminación permanente de sus datos personales del sistema.</li>
+            <li><strong>Oposición:</strong> Oponerse al tratamiento de sus datos en circunstancias específicas.</li>
+          </ul>
+          <p class="policy-highlight"><i class="fa-solid fa-circle-exclamation"></i> La eliminación de datos y cuentas de usuario es gestionada exclusivamente por el <strong>Administrador del Sistema</strong>. Para ejercer cualquiera de estos derechos, el usuario debe comunicarse directamente con el administrador a través de los canales internos autorizados por la empresa.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-triangle-exclamation"></i> 6. Responsabilidades del Usuario</h3>
+          <p>Cada usuario es responsable de mantener la confidencialidad de sus credenciales de acceso. Está prohibido compartir contraseñas, iniciar sesión desde dispositivos no autorizados o intentar acceder a secciones del sistema que no correspondan a su rol asignado. El sistema registra automáticamente cada acción mediante logs de auditoría inmutables.</p>
+        </div>
+
+        <div class="policy-section">
+          <h3><i class="fa-solid fa-rotate"></i> 7. Actualizaciones de estas Políticas</h3>
+          <p>La empresa se reserva el derecho de actualizar estas políticas cuando lo considere necesario. Los usuarios serán notificados de cambios significativos al iniciar sesión. El uso continuado del sistema implica la aceptación de las políticas vigentes.</p>
+        </div>
+
+      </div>
+      <div class="policy-modal-footer">
+        <button class="btn btn-primary" onclick="window.acceptPolicyFromModal()" type="button">
+          <i class="fa-solid fa-check"></i> He leído y acepto las políticas
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <!-- COOKIE CONSENT BANNER (Frecuente/Privacidad) -->
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+    <div class="cookie-content">
+      <div class="cookie-illustration">
+        <svg viewBox="0 0 120 120" width="85" height="85">
+          <!-- Pretzel at the top -->
+          <path d="M60 12 C51 12, 44 18, 44 25 C44 31, 48 35, 53 39 L60 45 L67 39 C72 35, 76 31, 76 25 C76 18, 69 12, 60 12 Z" fill="none" stroke="#F97316" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M50 25 C50 31, 70 31, 70 25" fill="none" stroke="#EA580C" stroke-width="3" stroke-linecap="round" />
+          <path d="M38 25 C38 38, 60 52, 60 52 C60 52, 82 38, 82 25" fill="none" stroke="#F97316" stroke-width="4.5" stroke-linecap="round" />
+          <!-- Truck Body -->
+          <rect x="25" y="55" width="70" height="36" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5" />
+          <!-- Cabin front -->
+          <path d="M80 55 L95 66 L95 83 L90 83 L90 55 Z" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5" />
+          <path d="M80 58 L90 66 L90 72 L80 72 Z" fill="#38BDF8" /> <!-- window -->
+          <!-- Awning (Shop front counter) -->
+          <rect x="35" y="62" width="40" height="5" fill="#EF4444" rx="1" />
+          <rect x="35" y="67" width="40" height="9" fill="#FBBF24" />
+          <!-- Stripes on awning -->
+          <rect x="37" y="62" width="6" height="5" fill="#FCA5A5" />
+          <rect x="49" y="62" width="6" height="5" fill="#FCA5A5" />
+          <rect x="61" y="62" width="6" height="5" fill="#FCA5A5" />
+          <!-- Wheels -->
+          <circle cx="42" cy="94" r="9" fill="#475569" />
+          <circle cx="42" cy="94" r="3" fill="#FFFFFF" />
+          <circle cx="76" cy="94" r="9" fill="#475569" />
+          <circle cx="76" cy="94" r="3" fill="#FFFFFF" />
+          <!-- Yellow Headlight -->
+          <path d="M95 73 L97 73 L97 76 L95 76 Z" fill="#FBBF24" />
+        </svg>
+      </div>
+      <div class="cookie-title">Cookies</div>
+      <div class="cookie-text">
+        Este sitio web utiliza cookies para asegurar que obtengas la mejor experiencia en nuestro sistema de control logístico.
+      </div>
+      
+      <!-- Panel de Opciones Expandible -->
+      <div id="cookie-options" class="cookie-options-panel" style="display: none;">
+        <div class="cookie-option-item">
+          <input type="checkbox" id="cookie-ess" checked disabled />
+          <div class="cookie-option-info">
+            <span class="cookie-option-title">Esenciales (Obligatorias)</span>
+            <span class="cookie-option-desc">Requeridas para el inicio de sesión, roles y la seguridad de Firestore.</span>
+          </div>
+        </div>
+        <div class="cookie-option-item">
+          <input type="checkbox" id="cookie-perf" checked />
+          <div class="cookie-option-info">
+            <span class="cookie-option-title">Rendimiento y SLA</span>
+            <span class="cookie-option-desc">Permite optimizar los intervalos de refresco dinámicos en tiempo real.</span>
+          </div>
+        </div>
+        <div class="cookie-option-item">
+          <input type="checkbox" id="cookie-pref" checked />
+          <div class="cookie-option-info">
+            <span class="cookie-option-title">Preferencias de Interfaz</span>
+            <span class="cookie-option-desc">Guarda el último panel visualizado para una navegación fluida.</span>
+          </div>
+        </div>
+        <button class="btn cookie-btn-save" onclick="window.saveCookiePreferences()">
+          Guardar Preferencias
+        </button>
+      </div>
+    </div>
+    
+    <div id="cookie-action-buttons" class="cookie-buttons">
+      <button class="cookie-btn cookie-btn-manage" onclick="window.showCookieOptions()">
+        Administrar
+      </button>
+      <button class="cookie-btn cookie-btn-accept" onclick="window.acceptAllCookies()">
+        Aceptar todas
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBnwzZHoAn0rboohTWO2c2XPEdCN_64qyE",
+      authDomain: "ruta-cachiflin.firebaseapp.com",
+      projectId: "ruta-cachiflin",
+      storageBucket: "ruta-cachiflin.firebasestorage.app",
+      messagingSenderId: "827675596",
+      appId: "1:827675596:web:4193553c4e238a1f9d4369"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.firebaseApp = app;
+    window.db = db;
+    window.firebaseAuth = auth;
+  </script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+
+</html>
