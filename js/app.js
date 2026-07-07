@@ -1,3 +1,4 @@
+
 import { 
   collection, 
   addDoc, 
@@ -294,6 +295,15 @@ function renderDashboard() {
   }
 }
 
+// CASO EMERSON: llena el datalist de "rc-pedido" con los pedidos que
+// realmente existen en Rutas, para que Reclamos no acepte pedidos inventados.
+function actualizarDatalistPedidos() {
+  const dl = document.getElementById('pedidos-activos-list');
+  if (!dl) return;
+  const pedidos = [...new Set(state.rutas.map(r => r.cliente).filter(Boolean))];
+  dl.innerHTML = pedidos.map(p => `<option value="${p}">`).join('');
+}
+
 function renderRutas() {
   const panel = document.getElementById('panel-rutas');
   if (!panel) return;
@@ -323,6 +333,9 @@ function renderRutas() {
       <div style="margin-left:16px">${estadoBadge(r.estado)}</div>
     </div>`;
   }).join('');
+
+  // CASO EMERSON: mantener el datalist de pedidos sincronizado con Rutas
+  actualizarDatalistPedidos();
 }
 
 function renderIncidentes() {
@@ -540,8 +553,15 @@ async function registrarRuta() {
   const conductor = document.getElementById('r-conductor').value;
   const unidad = document.getElementById('r-unidad').value;
   const horario = document.getElementById('r-horario').value;
-  const destino = document.getElementById('r-destino').value || 'Sin especificar';
-  const cliente = document.getElementById('r-cliente').value || 'Sin especificar';
+  const destinoEl = document.getElementById('r-destino');
+  const clienteEl = document.getElementById('r-cliente');
+
+  // CASO EMERSON: valida obligatoriedad y formato (PED-#####-L##) antes de
+  // guardar; antes se guardaba "Sin especificar" en silencio.
+  if (!destinoEl.reportValidity() || !clienteEl.reportValidity()) return;
+
+  const destino = destinoEl.value;
+  const cliente = clienteEl.value;
 
   try {
     await addDoc(collection(db, "rutas"), {
@@ -647,8 +667,15 @@ async function registrarReclamo() {
     return el ? el.value : '';
   };
 
-  const cliente = getVal('rc-cliente') || 'Cliente';
-  const pedido = getVal('rc-pedido') || 'PED-000';
+  const clienteEl = document.getElementById('rc-cliente');
+  const pedidoEl = document.getElementById('rc-pedido');
+
+  // CASO EMERSON: valida obligatoriedad y formato (mismo estándar que
+  // Rutas) antes de guardar; antes se guardaba "Cliente"/"PED-000".
+  if (!clienteEl.reportValidity() || !pedidoEl.reportValidity()) return;
+
+  const cliente = clienteEl.value;
+  const pedido = pedidoEl.value;
   const tipo = getVal('rc-tipo');
   const descripcion = getVal('rc-descripcion') || '';
   const conductor = getVal('rc-conductor');
@@ -745,7 +772,13 @@ async function resolverReclamo(id) {
 async function registrarContrato() {
   const db = window.db;
   if (!db) return;
-  const nombre = document.getElementById('c-nombre').value || 'Cliente nuevo';
+  const nombreEl = document.getElementById('c-nombre');
+
+  // CASO EMERSON: valida obligatoriedad antes de guardar; antes se
+  // guardaba "Cliente nuevo" en silencio.
+  if (!nombreEl.reportValidity()) return;
+
+  const nombre = nombreEl.value;
   const prioridad = document.getElementById('c-prioridad').value;
   const condiciones = document.getElementById('c-condiciones').value || 'Sin condiciones especiales';
   const tarifa = Number(document.getElementById('c-tarifa').value) || 0;
@@ -954,5 +987,3 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
-
-
