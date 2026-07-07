@@ -11,7 +11,6 @@
 
 <body>
 
-  <!-- PANTALLA DE LOGIN -->
   <div id="login-screen" class="login-overlay">
     <div class="login-card">
       <div class="login-logo">Ruta Cachiflin <span>Sistema de control</span></div>
@@ -29,9 +28,6 @@
           <input type="password" id="login-password" placeholder="Contraseña" required autocomplete="current-password" />
         </div>
 
-
-
-        <!-- Aceptación de políticas + cookies  -->
         <div class="policy-check-row" id="policy-check-row">
           <label class="policy-check-label">
             <input type="checkbox" id="policy-checkbox" onchange="window.toggleLoginBtn()" />
@@ -46,13 +42,10 @@
 
       <div id="login-error" class="login-error" style="display:none;"></div>
 
-
-
       <p class="login-footer">Gestión de rutas logísticas</p>
     </div>
   </div>
 
-  <!-- APP PRINCIPAL -->
   <aside class="sidebar" id="app-sidebar" style="display:none;">
     <div class="logo">Ruta Cachiflin <span>Sistema de control</span></div>
     <div class="sidebar-user" id="sidebar-user"></div>
@@ -78,11 +71,7 @@
         <div class="topbar-title" id="topbar-title">Dashboard</div>
       </div>
 
-
-
-      <!-- DASHBOARD -->
       <div id="panel-dashboard" class="panel active">
-        <!-- <div class="section-label">Estado general del sistema</div> -->
         <div class="grid3" style="margin-bottom:1.5rem">
           <div class="metric">
             <div class="metric-val" id="d-rutas">0</div>
@@ -114,42 +103,43 @@
         </div>
       </div>
 
-
-
-
-      <!-- RUTAS -->
       <div id="panel-rutas" class="panel">
         <div class="card">
           <div class="card-title">Registrar nueva salida de ruta</div>
           <div class="card-sub">El operario de tráfico completa este formulario al inicio de cada ruta</div>
-          <div class="grid2">
-            <div><label>Conductor</label><select id="r-conductor">
-                <option>Carlos Mejía</option>
-                <option>José Martínez</option>
-                <option>Luis Reyes</option>
-                <option>Mario López</option>
-              </select></div>
-            <div><label>Número de unidad</label><select id="r-unidad">
-                <option>Unidad 01</option>
-                <option>Unidad 02</option>
-                <option>Unidad 03</option>
-                <option>Unidad 04</option>
-              </select></div>
-          </div>
-          <div class="grid2">
-            <div><label>Horario de salida</label><select id="r-horario">
-                <option>8:00 AM</option>
-                <option>10:00 AM</option>
-                <option>1:00 PM</option>
-                <option>3:00 PM</option>
-                <option>5:00 PM</option>
-              </select></div>
-            <div><label>Destino</label><input id="r-destino" placeholder="Ej. Choloma, Cortés" type="text" /></div>
-          </div>
-          <label>Número de pedido</label>
-          <input id="r-cliente" placeholder="PED-#####-L##" type="text" />
-          <div class="flex-end"><button class="btn btn-primary" onclick="registrarRuta()">Registrar salida</button>
-          </div>
+          
+          <form onsubmit="event.preventDefault(); registrarRuta();">
+            <div class="grid2">
+              <div><label>Conductor</label><select id="r-conductor">
+                  <option>Carlos Mejía</option>
+                  <option>José Martínez</option>
+                  <option>Luis Reyes</option>
+                  <option>Mario López</option>
+                </select></div>
+              <div><label>Número de unidad</label><select id="r-unidad">
+                  <option>Unidad 01</option>
+                  <option>Unidad 02</option>
+                  <option>Unidad 03</option>
+                  <option>Unidad 04</option>
+                </select></div>
+            </div>
+            <div class="grid2">
+              <div><label>Horario de salida</label><select id="r-horario">
+                  <option>8:00 AM</option>
+                  <option>10:00 AM</option>
+                  <option>1:00 PM</option>
+                  <option>3:00 PM</option>
+                  <option>5:00 PM</option>
+                </select></div>
+              <div><label>Destino</label><input id="r-destino" placeholder="Ej. Choloma, Cortés" type="text" required /></div>
+            </div>
+            <label>Número de pedido</label>
+            <input id="r-cliente" placeholder="PED-#####-L##" type="text" required pattern="PED-\d{4,5}-L\d{2}" title="Formato requerido: PED-#####-L##" />
+            <div class="flex-end">
+              <button type="submit" class="btn btn-primary">Registrar salida</button>
+            </div>
+          </form>
+
         </div>
         <div class="card">
           <div class="card-title">Rutas activas</div>
@@ -158,29 +148,27 @@
         </div>
       </div>
 
-
-
-      <!-- INCIDENTES -->
       <div id="panel-incidentes" class="panel">
         <div class="card">
           <div class="card-title">Reportar incidente en ruta</div>
           <div id="no-rutas-msg" class="alert-box alert-warning" style="display:none; margin-top:10px;">
             <i class="fa-solid fa-triangle-exclamation"></i> No hay rutas disponibles para reportar incidentes
           </div>
-          <div id="incidente-form-fields">
+          
+          <form id="incidente-form" onsubmit="event.preventDefault(); reportarIncidente();">
             <div class="card-sub">Sección 1 — Datos operativos · Lo completa el Operario de Tráfico</div>
             <div style="margin-bottom: 12px;">
               <label>Seleccionar Ruta Activa</label>
-              <select id="i-ruta-activa-select" onchange="window.actualizarCamposRutaActiva()">
-                <!-- Opciones dinámicas de rutas activas -->
+              <select id="i-ruta-activa-select" required onchange="window.actualizarCamposRutaActiva()">
+                <option value="">-- Seleccione una ruta activa --</option>
               </select>
             </div>
             <div class="grid2">
-              <div><label>Conductor</label><input id="i-conductor" type="text" readonly style="background:var(--color-background-base);" /></div>
-              <div><label>Número de unidad</label><input id="i-unidad" type="text" readonly style="background:var(--color-background-base);" /></div>
+              <div><label>Conductor</label><input id="i-conductor" type="text" readonly style="background:var(--color-background-base);" required /></div>
+              <div><label>Número de unidad</label><input id="i-unidad" type="text" readonly style="background:var(--color-background-base);" required /></div>
             </div>
             <div class="grid2">
-              <div><label>Tipo de incidente</label><select id="i-tipo">
+              <div><label>Tipo de incidente</label><select id="i-tipo" required>
                   <option>Falla mecánica</option>
                   <option>Accidente de tráfico</option>
                   <option>Retraso por marcha</option>
@@ -188,35 +176,35 @@
                   <option>Problema climático</option>
                   <option>Otro</option>
                 </select></div>
-              <div><label>Ubicación del incidente</label><input id="i-ubicacion" placeholder="Punto de ruta donde ocurrió"
-                  type="text" /></div>
+              <div><label>Ubicación del incidente</label><input id="i-ubicacion" placeholder="Punto de ruta donde ocurrió" type="text" required /></div>
             </div>
             <label>Descripción del incidente</label>
-            <textarea id="i-descripcion" placeholder="¿Qué ocurrió exactamente?"></textarea>
+            <textarea id="i-descripcion" placeholder="¿Qué ocurrió exactamente?" required></textarea>
             <label>Acción inmediata tomada</label>
-            <input id="i-accion" placeholder="Ej. Se solicitó unidad de reemplazo" type="text" />
+            <input id="i-accion" placeholder="Ej. Se solicitó unidad de reemplazo" type="text" required />
 
             <hr class="sep" />
-            <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2
-              — Impacto en la entrega</div>
+            <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2 — Impacto en la entrega</div>
             <div class="grid2">
-              <div><label>Cliente afectado (Pedido)</label><input id="i-cliente" type="text" readonly style="background:var(--color-background-base);" /></div>
-              <div><label>Nueva hora estimada de entrega</label><input id="i-hora" type="time" /></div>
+              <div><label>Cliente afectado (Pedido)</label><input id="i-cliente" type="text" readonly style="background:var(--color-background-base);" required /></div>
+              <div><label>Nueva hora estimada de entrega</label><input id="i-hora" type="time" required /></div>
             </div>
             <div class="grid2">
-              <div><label>Estado de la entrega</label><select id="i-estado">
+              <div><label>Estado de la entrega</label><select id="i-estado" required>
                   <option>Se completará hoy</option>
                   <option>Se reprogramará</option>
                   <option>Cancelada</option>
                 </select></div>
-              <div><label>¿Se notificó al cliente?</label><select id="i-notificado">
+              <div><label>¿Se notificó al cliente?</label><select id="i-notificado" required>
                   <option>Sí</option>
                   <option>No</option>
                 </select></div>
             </div>
-            <div class="flex-end"><button class="btn btn-primary" onclick="reportarIncidente()">Enviar a
-                validación</button></div>
-          </div>
+            <div class="flex-end">
+              <button type="submit" class="btn btn-primary">Enviar a validación</button>
+            </div>
+          </form>
+          
         </div>
         <div class="card">
           <div class="card-title">Incidentes pendientes de validación</div>
@@ -225,54 +213,57 @@
         </div>
       </div>
 
-
-
-      <!-- RECLAMOS -->
       <div id="panel-reclamos" class="panel">
         <div class="card">
           <div class="card-title">Registrar reclamo de cliente</div>
-          <div class="card-sub">Sección 1 — Datos del reclamo · Lo completa el Agente de Servicio</div>
-          <div class="grid2">
-            <div><label>Nombre del cliente</label><input id="rc-cliente" placeholder="Nombre completo" type="text" />
+          
+          <form onsubmit="event.preventDefault(); registrarReclamo();">
+            <div class="card-sub">Sección 1 — Datos del reclamo · Lo completa el Agente de Servicio</div>
+            <div class="grid2">
+              <div><label>Nombre del cliente</label><input id="rc-cliente" placeholder="Nombre completo" type="text" required />
+              </div>
+              <div><label>Número de pedido afectado</label><input id="rc-pedido" placeholder="Ej. PED-24001-L01"
+                  type="text" required pattern="PED-\d{4,5}-L\d{2}" title="Formato requerido: PED-#####-L## (mismo estándar del módulo Rutas)" list="pedidos-activos-list" />
+                <datalist id="pedidos-activos-list"></datalist>
+              </div>
             </div>
-            <div><label>Número de pedido afectado</label><input id="rc-pedido" placeholder="Ej. PED-2024-001"
-                type="text" /></div>
-          </div>
-          <label>Tipo de reclamo</label>
-          <select id="rc-tipo">
-            <option>Entrega tardía por tráfico o marchas</option>
-            <option>Entrega tardía por mantenimiento de calles</option>
-            <option>Entrega tardía por problemas climáticos</option>
-            <option>Paquete dañado</option>
-            <option>Entrega en dirección incorrecta</option>
-            <option>Entrega no realizada</option>
-          </select>
-          <label>Descripción del cliente</label>
-          <textarea id="rc-descripcion" placeholder="¿Qué reportó el cliente?"></textarea>
+            <label>Tipo de reclamo</label>
+            <select id="rc-tipo">
+              <option>Entrega tardía por tráfico o marchas</option>
+              <option>Entrega tardía por mantenimiento de calles</option>
+              <option>Entrega tardía por problemas climáticos</option>
+              <option>Paquete dañado</option>
+              <option>Entrega en dirección incorrecta</option>
+              <option>Entrega no realizada</option>
+            </select>
+            <label>Descripción del cliente</label>
+            <textarea id="rc-descripcion" placeholder="¿Qué reportó el cliente?"></textarea>
 
-          <hr class="sep" />
-          <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2
-            — Análisis operativo</div>
-          <div class="grid2">
-            <div><label>Conductor involucrado</label><select id="rc-conductor">
-                <option>Carlos Mejía</option>
-                <option>José Martínez</option>
-                <option>Luis Reyes</option>
-                <option>Mario López</option>
-              </select></div>
-            <div><label>Ruta afectada</label><input id="rc-ruta" placeholder="Ej. Ruta San Pedro — Choloma"
-                type="text" /></div>
-          </div>
-          <div class="grid2">
-            <div><label>Causa identificada</label><input id="rc-causa" placeholder="¿Qué generó el reclamo?"
-                type="text" /></div>
-            <div><label>¿Es un problema recurrente?</label><select id="rc-recurrente">
-                <option>No</option>
-                <option>Sí</option>
-              </select></div>
-          </div>
-          <div class="flex-end"><button class="btn btn-primary" onclick="registrarReclamo()">Enviar a
-              validación</button></div>
+            <hr class="sep" />
+            <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2 — Análisis operativo</div>
+            <div class="grid2">
+              <div><label>Conductor involucrado</label><select id="rc-conductor">
+                  <option>Carlos Mejía</option>
+                  <option>José Martínez</option>
+                  <option>Luis Reyes</option>
+                  <option>Mario López</option>
+                </select></div>
+              <div><label>Ruta afectada</label><input id="rc-ruta" placeholder="Ej. Ruta San Pedro — Choloma"
+                  type="text" /></div>
+            </div>
+            <div class="grid2">
+              <div><label>Causa identificada</label><input id="rc-causa" placeholder="¿Qué generó el reclamo?"
+                  type="text" /></div>
+              <div><label>¿Es un problema recurrentes?</label><select id="rc-recurrente">
+                  <option>No</option>
+                  <option>Sí</option>
+                </select></div>
+            </div>
+            <div class="flex-end">
+              <button type="submit" class="btn btn-primary">Enviar a validación</button>
+            </div>
+          </form>
+
         </div>
         <div class="card">
           <div class="card-title">Reclamos activos</div>
@@ -280,31 +271,33 @@
         </div>
       </div>
 
-
-
-      <!-- CONTRATOS -->
       <div id="panel-contratos" class="panel">
         <div class="card">
           <div class="card-title">Registrar condiciones de contrato</div>
-          <div class="card-sub">Lo completa el Director Financiero al firmar con un cliente nuevo</div>
-          <div class="grid2">
-            <div><label>Nombre del cliente</label><input id="c-nombre" placeholder="Nombre de la empresa o persona"
-                type="text" /></div>
-            <div><label>Prioridad de entrega</label><select id="c-prioridad">
-                <option>Normal</option>
-                <option>Urgente — 24 horas</option>
-                <option>Express — mismo día</option>
-              </select></div>
-          </div>
-          <label>Condiciones especiales de entrega</label>
-          <input id="c-condiciones" placeholder="Ej. Solo entregas en horario matutino, carga frágil" type="text" />
-          <div class="grid2">
-            <div><label>Tarifa acordada (L.)</label><input id="c-tarifa" placeholder="0.00" type="number" /></div>
-            <div><label>Penalización por entrega tardía (L.)</label><input id="c-penalizacion" placeholder="0.00"
-                type="number" /></div>
-          </div>
-          <div class="flex-end"><button class="btn btn-primary" onclick="registrarContrato()">Guardar y notificar a
-              todas las áreas</button></div>
+          
+          <form onsubmit="event.preventDefault(); registrarContrato();">
+            <div class="card-sub">Lo completa el Director Financiero al firmar con un cliente nuevo</div>
+            <div class="grid2">
+              <div><label>Nombre del cliente</label><input id="c-nombre" placeholder="Nombre de la empresa o persona"
+                  type="text" required /></div>
+              <div><label>Prioridad de entrega</label><select id="c-prioridad">
+                  <option>Normal</option>
+                  <option>Urgente — 24 horas</option>
+                  <option>Express — mismo día</option>
+                </select></div>
+            </div>
+            <label>Conditions especiales de entrega</label>
+            <input id="c-condiciones" placeholder="Ej. Solo entregas en horario matutino, carga frágil" type="text" />
+            <div class="grid2">
+              <div><label>Tarifa acordada (L.)</label><input id="c-tarifa" placeholder="0.00" type="number" /></div>
+              <div><label>Penalización por entrega tardía (L.)</label><input id="c-penalizacion" placeholder="0.00"
+                  type="number" /></div>
+            </div>
+            <div class="flex-end">
+              <button type="submit" class="btn btn-primary">Guardar y notificar a todas las áreas</button>
+            </div>
+          </form>
+
         </div>
         <div class="card">
           <div class="card-title">Contratos activos</div>
@@ -316,8 +309,6 @@
 
   </main>
 
-
-  <!-- MODAL DE POLÍTICAS DE PRIVACIDAD Y USO -->
   <div id="policy-modal-overlay" class="policy-modal-overlay" style="display:none;" onclick="window.closePolicyModal(event)">
     <div class="policy-modal">
       <div class="policy-modal-header">
@@ -385,35 +376,25 @@
     </div>
   </div>
 
-
-  
-  <!-- COOKIE CONSENT BANNER (Frecuente/Privacidad) -->
   <div id="cookie-banner" class="cookie-banner" style="display: none;">
     <div class="cookie-content">
       <div class="cookie-illustration">
         <svg viewBox="0 0 120 120" width="85" height="85">
-          <!-- Pretzel at the top -->
           <path d="M60 12 C51 12, 44 18, 44 25 C44 31, 48 35, 53 39 L60 45 L67 39 C72 35, 76 31, 76 25 C76 18, 69 12, 60 12 Z" fill="none" stroke="#F97316" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M50 25 C50 31, 70 31, 70 25" fill="none" stroke="#EA580C" stroke-width="3" stroke-linecap="round" />
           <path d="M38 25 C38 38, 60 52, 60 52 C60 52, 82 38, 82 25" fill="none" stroke="#F97316" stroke-width="4.5" stroke-linecap="round" />
-          <!-- Truck Body -->
           <rect x="25" y="55" width="70" height="36" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5" />
-          <!-- Cabin front -->
           <path d="M80 55 L95 66 L95 83 L90 83 L90 55 Z" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5" />
-          <path d="M80 58 L90 66 L90 72 L80 72 Z" fill="#38BDF8" /> <!-- window -->
-          <!-- Awning (Shop front counter) -->
+          <path d="M80 58 L90 66 L90 72 L80 72 Z" fill="#38BDF8" />
           <rect x="35" y="62" width="40" height="5" fill="#EF4444" rx="1" />
           <rect x="35" y="67" width="40" height="9" fill="#FBBF24" />
-          <!-- Stripes on awning -->
           <rect x="37" y="62" width="6" height="5" fill="#FCA5A5" />
           <rect x="49" y="62" width="6" height="5" fill="#FCA5A5" />
           <rect x="61" y="62" width="6" height="5" fill="#FCA5A5" />
-          <!-- Wheels -->
           <circle cx="42" cy="94" r="9" fill="#475569" />
           <circle cx="42" cy="94" r="3" fill="#FFFFFF" />
           <circle cx="76" cy="94" r="9" fill="#475569" />
           <circle cx="76" cy="94" r="3" fill="#FFFFFF" />
-          <!-- Yellow Headlight -->
           <path d="M95 73 L97 73 L97 76 L95 76 Z" fill="#FBBF24" />
         </svg>
       </div>
@@ -422,7 +403,6 @@
         Este sitio web utiliza cookies para asegurar que obtengas la mejor experiencia en nuestro sistema de control logístico.
       </div>
       
-      <!-- Panel de Opciones Expandible -->
       <div id="cookie-options" class="cookie-options-panel" style="display: none;">
         <div class="cookie-option-item">
           <input type="checkbox" id="cookie-ess" checked disabled />
