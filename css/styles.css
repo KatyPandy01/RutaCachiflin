@@ -671,6 +671,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 
+<<<<<<< HEAD
 /* ===== VALIDACIÓN EN TIEMPO REAL — CAMPO PED-#####-L## ===== */
 
 /* Wrapper posicional para el ícono de estado */
@@ -791,3 +792,5 @@ textarea { resize: vertical; min-height: 80px; }
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+=======
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31

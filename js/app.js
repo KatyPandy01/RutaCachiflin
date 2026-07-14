@@ -860,6 +860,7 @@ window.aprobarContrato = aprobarContrato;
 window.handleLogin = handleLogin;
 window.handleLogout = handleLogout;
 
+<<<<<<< HEAD
 // ============================================================================
 // VALIDACIÓN AL SALIR DEL CAMPO — PED-#####-L##
 // ============================================================================
@@ -958,6 +959,8 @@ function initPedValidation() {
   bindPedValidation('rc-pedido',  'rc-pedido-error');
 }
 
+=======
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
 
 // ============================================================================
 // GESTIÓN DE POLÍTICAS Y COOKIES
@@ -1040,9 +1043,12 @@ function init() {
   // Verificar consentimiento de cookies
   checkCookieConsent();
 
+<<<<<<< HEAD
   // Activar validación en tiempo real para campos PED-#####-L##
   initPedValidation();
 
+=======
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
   // Intervalo para actualizar tiempos en la UI cada 30 segundos
   setInterval(() => {
     renderAll();

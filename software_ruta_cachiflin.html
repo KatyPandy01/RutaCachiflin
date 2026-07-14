@@ -108,7 +108,11 @@
           <div class="card-title">Registrar nueva salida de ruta</div>
           <div class="card-sub">El operario de tráfico completa este formulario al inicio de cada ruta</div>
           
+<<<<<<< HEAD
           <form id="form-rutas" onsubmit="event.preventDefault(); registrarRuta();">
+=======
+          <form onsubmit="event.preventDefault(); registrarRuta();">
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
             <div class="grid2">
               <div><label>Conductor</label><select id="r-conductor">
                   <option>Carlos Mejía</option>
@@ -134,6 +138,7 @@
               <div><label>Destino</label><input id="r-destino" placeholder="Ej. Choloma, Cortés" type="text" required /></div>
             </div>
             <label>Número de pedido</label>
+<<<<<<< HEAD
             <div class="ped-field-wrapper">
               <input id="r-cliente" placeholder="Ej. PED-24001-L01" type="text" required
                 pattern="PED-\d{4,5}-L\d{2}"
@@ -146,6 +151,9 @@
               <i class="fa-solid fa-triangle-exclamation"></i>
               Formato incorrecto. Debe ser <span class="ped-example">PED-#####-L##</span> (ej. <span class="ped-example">PED-24001-L01</span>)
             </span>
+=======
+            <input id="r-cliente" placeholder="PED-#####-L##" type="text" required pattern="PED-\d{4,5}-L\d{2}" title="Formato requerido: PED-#####-L##" />
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
             <div class="flex-end">
               <button type="submit" class="btn btn-primary">Registrar salida</button>
             </div>
@@ -167,6 +175,7 @@
           </div>
           
           <form id="incidente-form" onsubmit="event.preventDefault(); reportarIncidente();">
+<<<<<<< HEAD
             <div id="incidente-form-fields" style="display:none;">
               <div class="card-sub">Sección 1 — Datos operativos · Lo completa el Operario de Tráfico</div>
               <div style="margin-bottom: 12px;">
@@ -215,6 +224,54 @@
               <div class="flex-end">
                 <button type="submit" class="btn btn-primary">Enviar a validación</button>
               </div>
+=======
+            <div class="card-sub">Sección 1 — Datos operativos · Lo completa el Operario de Tráfico</div>
+            <div style="margin-bottom: 12px;">
+              <label>Seleccionar Ruta Activa</label>
+              <select id="i-ruta-activa-select" required onchange="window.actualizarCamposRutaActiva()">
+                <option value="">-- Seleccione una ruta activa --</option>
+              </select>
+            </div>
+            <div class="grid2">
+              <div><label>Conductor</label><input id="i-conductor" type="text" readonly style="background:var(--color-background-base);" required /></div>
+              <div><label>Número de unidad</label><input id="i-unidad" type="text" readonly style="background:var(--color-background-base);" required /></div>
+            </div>
+            <div class="grid2">
+              <div><label>Tipo de incidente</label><select id="i-tipo" required>
+                  <option>Falla mecánica</option>
+                  <option>Accidente de tráfico</option>
+                  <option>Retraso por marcha</option>
+                  <option>Retraso por mantenimiento de calles</option>
+                  <option>Problema climático</option>
+                  <option>Otro</option>
+                </select></div>
+              <div><label>Ubicación del incidente</label><input id="i-ubicacion" placeholder="Punto de ruta donde ocurrió" type="text" required /></div>
+            </div>
+            <label>Descripción del incidente</label>
+            <textarea id="i-descripcion" placeholder="¿Qué ocurrió exactamente?" required></textarea>
+            <label>Acción inmediata tomada</label>
+            <input id="i-accion" placeholder="Ej. Se solicitó unidad de reemplazo" type="text" required />
+
+            <hr class="sep" />
+            <div class="card-sub" style="margin-bottom:12px; font-weight:600; color:var(--color-text-primary);">Sección 2 — Impacto en la entrega</div>
+            <div class="grid2">
+              <div><label>Cliente afectado (Pedido)</label><input id="i-cliente" type="text" readonly style="background:var(--color-background-base);" required /></div>
+              <div><label>Nueva hora estimada de entrega</label><input id="i-hora" type="time" required /></div>
+            </div>
+            <div class="grid2">
+              <div><label>Estado de la entrega</label><select id="i-estado" required>
+                  <option>Se completará hoy</option>
+                  <option>Se reprogramará</option>
+                  <option>Cancelada</option>
+                </select></div>
+              <div><label>¿Se notificó al cliente?</label><select id="i-notificado" required>
+                  <option>Sí</option>
+                  <option>No</option>
+                </select></div>
+            </div>
+            <div class="flex-end">
+              <button type="submit" class="btn btn-primary">Enviar a validación</button>
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
             </div>
           </form>
           
@@ -230,11 +287,16 @@
         <div class="card">
           <div class="card-title">Registrar reclamo de cliente</div>
           
+<<<<<<< HEAD
           <form id="form-reclamos" onsubmit="event.preventDefault(); registrarReclamo();">
+=======
+          <form onsubmit="event.preventDefault(); registrarReclamo();">
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
             <div class="card-sub">Sección 1 — Datos del reclamo · Lo completa el Agente de Servicio</div>
             <div class="grid2">
               <div><label>Nombre del cliente</label><input id="rc-cliente" placeholder="Nombre completo" type="text" required />
               </div>
+<<<<<<< HEAD
               <div>
                 <label>Número de pedido afectado</label>
                 <div class="ped-field-wrapper">
@@ -252,6 +314,11 @@
                   <i class="fa-solid fa-triangle-exclamation"></i>
                   Formato incorrecto. Debe ser <span class="ped-example">PED-#####-L##</span> (ej. <span class="ped-example">PED-24001-L01</span>)
                 </span>
+=======
+              <div><label>Número de pedido afectado</label><input id="rc-pedido" placeholder="Ej. PED-24001-L01"
+                  type="text" required pattern="PED-\d{4,5}-L\d{2}" title="Formato requerido: PED-#####-L## (mismo estándar del módulo Rutas)" list="pedidos-activos-list" />
+                <datalist id="pedidos-activos-list"></datalist>
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
               </div>
             </div>
             <label>Tipo de reclamo</label>
@@ -302,7 +369,11 @@
         <div class="card">
           <div class="card-title">Registrar condiciones de contrato</div>
           
+<<<<<<< HEAD
           <form id="form-contratos" onsubmit="event.preventDefault(); registrarContrato();">
+=======
+          <form onsubmit="event.preventDefault(); registrarContrato();">
+>>>>>>> e922001734046aa6b906cbae6d07fb73dfaf0d31
             <div class="card-sub">Lo completa el Director Financiero al firmar con un cliente nuevo</div>
             <div class="grid2">
               <div><label>Nombre del cliente</label><input id="c-nombre" placeholder="Nombre de la empresa o persona"
