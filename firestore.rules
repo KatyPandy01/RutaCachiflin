@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Verificar si el usuario está autenticado y activo (buscando por UID o Email)
+    function isActivo() {
+      let uidPath = /databases/$(database)/documents/usuarios/$(request.auth.uid);
+      let emailPath = /databases/$(database)/documents/usuarios/$(request.auth.token.email);
+      return request.auth != null && (
+        (exists(uidPath) && get(uidPath).data.activo == true) ||
+        (exists(emailPath) && get(emailPath).data.activo == true)
+      );
+    }
+    
+    // Verificar rol específico del usuario activo (buscando por UID o Email)
+    function hasRole(role) {
+      let uidPath = /databases/$(database)/documents/usuarios/$(request.auth.uid);
+      let emailPath = /databases/$(database)/documents/usuarios/$(request.auth.token.email);
+      return request.auth != null && (
+        (exists(uidPath) && get(uidPath).data.activo == true && get(uidPath).data.rol == role) ||
+        (exists(emailPath) && get(emailPath).data.activo == true && get(emailPath).data.rol == role)
+      );
+    }
+
+    match /usuarios/{document} {
+      allow read: if request.auth != null;
+    }
+
+    match /rutas/{document} {
+      allow read: if isActivo();
+      allow write: if hasRole('operario_trafico') || hasRole('jefe_trafico');
+    }
+
+    match /incidentes/{document} {
+      allow read: if isActivo();
+      allow create: if hasRole('operario_trafico');
+      allow update: if isActivo() && (
+        // Jefe de tráfico valida incidentes pendientes
+        (hasRole('jefe_trafico') && resource.data.estado == 'pendiente' && request.resource.data.estado == 'validado') ||
+        // Director general aprueba acción correctiva de incidentes validados
+        (hasRole('director_general') && resource.data.estado == 'validado' && request.resource.data.estado == 'aprobado_dg')
+      );
+    }
+
+    match /reclamos/{document} {
+      allow read: if isActivo();
+      allow create: if hasRole('agente_servicio');
+      allow update: if isActivo() && (
+        (hasRole('coordinador_servicio') && resource.data.estado == 'abierto' && request.resource.data.estado == 'validado') ||
+        (hasRole('jefe_trafico') && resource.data.estado == 'validado' && request.resource.data.estado == 'en revisión') ||
+        (hasRole('director_financiero') && resource.data.estado == 'en revisión' && request.resource.data.estado == 'resuelto')
+      );
+    }
+
+    match /contratos/{document} {
+      allow read: if isActivo() && (
+        resource.data.estado == 'activo' || 
+        hasRole('director_general') || 
+        hasRole('director_financiero')
+      );
+      allow create: if hasRole('director_financiero') && request.resource.data.estado == 'pendiente_aprobacion';
+      allow update: if hasRole('director_general') && resource.data.estado == 'pendiente_aprobacion' && request.resource.data.estado == 'activo';
+    }
+
+    match /logs_auditoria/{document} {
+      allow read: if isActivo();
+      allow create: if isActivo();
+      allow update, delete: if false;
+    }
+  }
+}
